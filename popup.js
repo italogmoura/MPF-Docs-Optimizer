@@ -7,7 +7,6 @@ const elements = {
   zoomOut: document.getElementById('zoomOut'),
   zoomIn: document.getElementById('zoomIn'),
   zoomValue: document.getElementById('zoomValue'),
-  applySettings: document.getElementById('applySettings'),
   resetSettings: document.getElementById('resetSettings'),
   statusMessage: document.getElementById('statusMessage')
 };
@@ -65,25 +64,29 @@ async function saveSettings() {
 
 // Configurar event listeners
 function setupEventListeners() {
-  // Toggle switches
-  elements.hideUnicoBar.addEventListener('change', (e) => {
+  // Toggle switches com aplicação automática
+  elements.hideUnicoBar.addEventListener('change', async (e) => {
     currentSettings.hideUnicoBar = e.target.checked;
     if (e.target.checked && currentSettings.fullscreenMode) {
       // Desativar modo tela cheia se estiver ativando controle individual
       currentSettings.fullscreenMode = false;
       elements.fullscreenMode.checked = false;
     }
+    await saveSettings();
+    await applySettingsToTab();
   });
 
-  elements.hideDocsBar.addEventListener('change', (e) => {
+  elements.hideDocsBar.addEventListener('change', async (e) => {
     currentSettings.hideDocsBar = e.target.checked;
     if (e.target.checked && currentSettings.fullscreenMode) {
       currentSettings.fullscreenMode = false;
       elements.fullscreenMode.checked = false;
     }
+    await saveSettings();
+    await applySettingsToTab();
   });
 
-  elements.fullscreenMode.addEventListener('change', (e) => {
+  elements.fullscreenMode.addEventListener('change', async (e) => {
     currentSettings.fullscreenMode = e.target.checked;
     if (e.target.checked) {
       // Ativar ambas as barras quando modo tela cheia ativo
@@ -92,39 +95,42 @@ function setupEventListeners() {
       elements.hideUnicoBar.checked = true;
       elements.hideDocsBar.checked = true;
     }
+    await saveSettings();
+    await applySettingsToTab();
   });
 
-  elements.autoHide.addEventListener('change', (e) => {
+  elements.autoHide.addEventListener('change', async (e) => {
     currentSettings.autoHide = e.target.checked;
+    await saveSettings();
+    await applySettingsToTab();
   });
 
-  // Controles de zoom
-  elements.zoomOut.addEventListener('click', () => {
+  // Controles de zoom com aplicação automática
+  elements.zoomOut.addEventListener('click', async () => {
     if (currentSettings.zoomLevel > 50) {
       currentSettings.zoomLevel -= 10;
       updateZoomDisplay();
+      await saveSettings();
+      await applySettingsToTab();
     }
   });
 
-  elements.zoomIn.addEventListener('click', () => {
+  elements.zoomIn.addEventListener('click', async () => {
     if (currentSettings.zoomLevel < 200) {
       currentSettings.zoomLevel += 10;
       updateZoomDisplay();
+      await saveSettings();
+      await applySettingsToTab();
     }
   });
 
-  // Botões de ação
-  elements.applySettings.addEventListener('click', applySettings);
+  // Botão de reset (único botão restante)
   elements.resetSettings.addEventListener('click', resetSettings);
 }
 
-// Aplicar configurações
-async function applySettings() {
+// Aplicar configurações na aba ativa
+async function applySettingsToTab() {
   try {
-    // Salvar configurações
-    await saveSettings();
-
-    // Enviar mensagem para content script
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tabs[0]) {
       chrome.tabs.sendMessage(tabs[0].id, {
@@ -132,8 +138,7 @@ async function applySettings() {
         settings: currentSettings
       });
     }
-
-    showStatus('Configurações aplicadas!', 'success');
+    showStatus('Aplicado automaticamente!', 'success');
   } catch (error) {
     console.error('Erro ao aplicar configurações:', error);
     showStatus('Erro ao aplicar', 'error');
@@ -145,16 +150,7 @@ async function resetSettings() {
   currentSettings = { ...defaultSettings };
   await saveSettings();
   updateUI();
-  
-  // Aplicar configurações resetadas
-  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tabs[0]) {
-    chrome.tabs.sendMessage(tabs[0].id, {
-      action: 'updateSettings',
-      settings: currentSettings
-    });
-  }
-  
+  await applySettingsToTab();
   showStatus('Configurações restauradas!', 'success');
 }
 
@@ -236,12 +232,6 @@ function addButtonFeedback() {
 
 // Implementar atalhos de teclado (Nielsen: Controle e Liberdade)
 document.addEventListener('keydown', (e) => {
-  // Ctrl/Cmd + Enter: Aplicar configurações
-  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-    e.preventDefault();
-    elements.applySettings.click();
-  }
-  
   // Escape: Restaurar padrões
   if (e.key === 'Escape') {
     e.preventDefault();
@@ -261,11 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Adicionar tooltips informativos
   const tooltips = {
-    'hideUnicoBar': 'Remove completamente a barra do Sistema Único',
-    'hideDocsBar': 'Mantém apenas ferramentas essenciais do Google Docs',
+    'hideUnicoBar': 'Remove completamente a barra do Sistema Único - Aplicado automaticamente',
+    'hideDocsBar': 'Mantém apenas ferramentas essenciais do Google Docs - Aplicado automaticamente',
     'fullscreenMode': 'Ativa ambas as opções acima automaticamente',
     'autoHide': 'Barras desaparecem durante rolagem e reaparecem quando parar',
-    'applySettings': 'Atalho: Ctrl+Enter',
     'resetSettings': 'Atalho: Escape ou Ctrl+R'
   };
   
@@ -285,13 +274,13 @@ function setupRealtimeUpdates() {
     toggle.addEventListener('change', () => {
       updateActiveStates();
       
-      // Feedback visual imediato
+      // Feedback visual sutil
       const controlItem = toggle.closest('.control-item');
       if (controlItem) {
-        controlItem.style.transform = 'scale(1.05)';
+        controlItem.style.transform = 'scale(1.02)';
         setTimeout(() => {
           controlItem.style.transform = '';
-        }, 150);
+        }, 100);
       }
     });
   });

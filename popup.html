@@ -11,21 +11,24 @@
     <header>
       <h1>MPF Docs Optimizer</h1>
       <p class="subtitle">Otimize seu espaço de trabalho</p>
+      
+      <!-- Controles no Header -->
+      <div class="header-controls">
+        <!-- Zoom Control -->
+        <div class="zoom-control-mini">
+          <button class="zoom-btn-mini" id="zoomOut">−</button>
+          <span class="zoom-value-mini" id="zoomValue">100%</span>
+          <button class="zoom-btn-mini" id="zoomIn">+</button>
+        </div>
+        
+        <!-- Reset Button -->
+        <button class="reset-btn" id="resetSettings" title="Restaurar Padrões (Esc)">
+          <span class="reset-icon">↺</span>
+        </button>
+      </div>
     </header>
 
     <main>
-      <!-- Botões de Ação - Sempre Visíveis -->
-      <section class="action-buttons-top">
-        <button class="btn btn-primary" id="applySettings">
-          <span class="btn-icon">✓</span>
-          Aplicar Configurações
-        </button>
-        <button class="btn btn-secondary" id="resetSettings">
-          <span class="btn-icon">↺</span>
-          Restaurar Padrões
-        </button>
-      </section>
-
       <!-- Controles Principais -->
       <section class="controls-section">
         <h2>Barras de Interface</h2>
@@ -76,18 +79,6 @@
           <div class="control-info">
             <span class="control-label">Auto-ocultar ao Rolar</span>
             <span class="control-desc">Barras desaparecem durante a rolagem</span>
-          </div>
-        </div>
-
-        <div class="control-item zoom-control">
-          <div class="control-info">
-            <span class="control-label">Zoom do Editor</span>
-            <span class="control-desc">Ajuste o tamanho do conteúdo</span>
-          </div>
-          <div class="zoom-controls">
-            <button class="zoom-btn" id="zoomOut">−</button>
-            <span class="zoom-value" id="zoomValue">100%</span>
-            <button class="zoom-btn" id="zoomIn">+</button>
           </div>
         </div>
       </section>
