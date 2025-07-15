@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPF Docs Optimizer</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>MPF Docs Optimizer</h1>
+      <p class="subtitle">Otimize seu espaço de trabalho</p>
+    </header>
+
+    <main>
+      <!-- Controles Principais -->
+      <section class="controls-section">
+        <h2>Barras de Interface</h2>
+        
+        <div class="control-item">
+          <label class="toggle-switch">
+            <input type="checkbox" id="hideUnicoBar">
+            <span class="slider"></span>
+          </label>
+          <div class="control-info">
+            <span class="control-label">Ocultar Barra Sistema Único</span>
+            <span class="control-desc">Remove a barra superior do sistema</span>
+          </div>
+        </div>
+
+        <div class="control-item">
+          <label class="toggle-switch">
+            <input type="checkbox" id="hideDocsBar">
+            <span class="slider"></span>
+          </label>
+          <div class="control-info">
+            <span class="control-label">Compactar Barra Google Docs</span>
+            <span class="control-desc">Mantém apenas a barra mínima do editor</span>
+          </div>
+        </div>
+
+        <div class="control-item">
+          <label class="toggle-switch">
+            <input type="checkbox" id="fullscreenMode">
+            <span class="slider"></span>
+          </label>
+          <div class="control-info">
+            <span class="control-label">Modo Tela Cheia Inteligente</span>
+            <span class="control-desc">Maximiza o editor ocultando todas as barras</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recursos Avançados -->
+      <section class="controls-section">
+        <h2>Recursos Avançados</h2>
+
+        <div class="control-item">
+          <label class="toggle-switch">
+            <input type="checkbox" id="autoHide">
+            <span class="slider"></span>
+          </label>
+          <div class="control-info">
+            <span class="control-label">Auto-ocultar ao Rolar</span>
+            <span class="control-desc">Barras desaparecem durante a rolagem</span>
+          </div>
+        </div>
+
+        <div class="control-item zoom-control">
+          <div class="control-info">
+            <span class="control-label">Zoom do Editor</span>
+            <span class="control-desc">Ajuste o tamanho do conteúdo</span>
+          </div>
+          <div class="zoom-controls">
+            <button class="zoom-btn" id="zoomOut">−</button>
+            <span class="zoom-value" id="zoomValue">100%</span>
+            <button class="zoom-btn" id="zoomIn">+</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Botões de Ação -->
+      <section class="action-buttons">
+        <button class="btn btn-primary" id="applySettings">
+          <span class="btn-icon">✓</span>
+          Aplicar Configurações
+        </button>
+        <button class="btn btn-secondary" id="resetSettings">
+          <span class="btn-icon">↺</span>
+          Restaurar Padrões
+        </button>
+      </section>
+    </main>
+
+    <footer>
+      <p class="status" id="statusMessage">Pronto para otimizar</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
