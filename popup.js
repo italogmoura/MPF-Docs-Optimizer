@@ -1,12 +1,9 @@
 // Elementos do DOM
 const elements = {
   hideUnicoBar: document.getElementById('hideUnicoBar'),
-  hideDocsBar: document.getElementById('hideDocsBar'),
-  fullscreenMode: document.getElementById('fullscreenMode'),
-  autoHide: document.getElementById('autoHide'),
   zoomOut: document.getElementById('zoomOut'),
   zoomIn: document.getElementById('zoomIn'),
-  zoomValue: document.getElementById('zoomValue'),
+  zoomLevel: document.getElementById('zoomLevel'),
   resetSettings: document.getElementById('resetSettings'),
   statusMessage: document.getElementById('statusMessage')
 };
@@ -14,18 +11,12 @@ const elements = {
 // Estado da aplicação
 let currentSettings = {
   hideUnicoBar: false,
-  hideDocsBar: false,
-  fullscreenMode: false,
-  autoHide: false,
   zoomLevel: 100
 };
 
 // Configurações padrão
 const defaultSettings = {
   hideUnicoBar: false,
-  hideDocsBar: false,
-  fullscreenMode: false,
-  autoHide: false,
   zoomLevel: 100
 };
 
@@ -43,7 +34,6 @@ async function loadSettings() {
     if (result.mpfDocsSettings) {
       currentSettings = { ...defaultSettings, ...result.mpfDocsSettings };
     }
-    // Aplicar indicadores visuais de estado ativo
     updateActiveStates();
   } catch (error) {
     console.error('Erro ao carregar configurações:', error);
@@ -67,65 +57,37 @@ function setupEventListeners() {
   // Toggle switches com aplicação automática
   elements.hideUnicoBar.addEventListener('change', async (e) => {
     currentSettings.hideUnicoBar = e.target.checked;
-    if (e.target.checked && currentSettings.fullscreenMode) {
-      // Desativar modo tela cheia se estiver ativando controle individual
-      currentSettings.fullscreenMode = false;
-      elements.fullscreenMode.checked = false;
-    }
     await saveSettings();
     await applySettingsToTab();
+    updateActiveStates();
   });
 
-  elements.hideDocsBar.addEventListener('change', async (e) => {
-    currentSettings.hideDocsBar = e.target.checked;
-    if (e.target.checked && currentSettings.fullscreenMode) {
-      currentSettings.fullscreenMode = false;
-      elements.fullscreenMode.checked = false;
-    }
+  // Zoom controls
+  elements.zoomOut.addEventListener('click', () => updateZoom(-10));
+  elements.zoomIn.addEventListener('click', () => updateZoom(10));
+  elements.zoomLevel.addEventListener('change', async () => {
+    let level = parseInt(elements.zoomLevel.value, 10);
+    if (isNaN(level)) level = 100;
+    if (level < 50) level = 50;
+    if (level > 200) level = 200;
+    currentSettings.zoomLevel = level;
+    elements.zoomLevel.value = level; // Correct the value if it was out of bounds
     await saveSettings();
     await applySettingsToTab();
-  });
-
-  elements.fullscreenMode.addEventListener('change', async (e) => {
-    currentSettings.fullscreenMode = e.target.checked;
-    if (e.target.checked) {
-      // Ativar ambas as barras quando modo tela cheia ativo
-      currentSettings.hideUnicoBar = true;
-      currentSettings.hideDocsBar = true;
-      elements.hideUnicoBar.checked = true;
-      elements.hideDocsBar.checked = true;
-    }
-    await saveSettings();
-    await applySettingsToTab();
-  });
-
-  elements.autoHide.addEventListener('change', async (e) => {
-    currentSettings.autoHide = e.target.checked;
-    await saveSettings();
-    await applySettingsToTab();
-  });
-
-  // Controles de zoom com aplicação automática
-  elements.zoomOut.addEventListener('click', async () => {
-    if (currentSettings.zoomLevel > 50) {
-      currentSettings.zoomLevel -= 10;
-      updateZoomDisplay();
-      await saveSettings();
-      await applySettingsToTab();
-    }
-  });
-
-  elements.zoomIn.addEventListener('click', async () => {
-    if (currentSettings.zoomLevel < 200) {
-      currentSettings.zoomLevel += 10;
-      updateZoomDisplay();
-      await saveSettings();
-      await applySettingsToTab();
-    }
   });
 
   // Botão de reset (único botão restante)
   elements.resetSettings.addEventListener('click', resetSettings);
+}
+
+async function updateZoom(change) {
+  let level = currentSettings.zoomLevel + change;
+  if (level < 50) level = 50;
+  if (level > 200) level = 200;
+  currentSettings.zoomLevel = level;
+  updateUI();
+  await saveSettings();
+  await applySettingsToTab();
 }
 
 // Aplicar configurações na aba ativa
@@ -157,19 +119,7 @@ async function resetSettings() {
 // Atualizar interface
 function updateUI() {
   elements.hideUnicoBar.checked = currentSettings.hideUnicoBar;
-  elements.hideDocsBar.checked = currentSettings.hideDocsBar;
-  elements.fullscreenMode.checked = currentSettings.fullscreenMode;
-  elements.autoHide.checked = currentSettings.autoHide;
-  updateZoomDisplay();
-}
-
-// Atualizar display do zoom
-function updateZoomDisplay() {
-  elements.zoomValue.textContent = `${currentSettings.zoomLevel}%`;
-  
-  // Desabilitar botões nos limites
-  elements.zoomOut.disabled = currentSettings.zoomLevel <= 50;
-  elements.zoomIn.disabled = currentSettings.zoomLevel >= 200;
+  elements.zoomLevel.value = currentSettings.zoomLevel;
 }
 
 // Mostrar status
@@ -196,41 +146,15 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   }
 });
 
-// Função para atualizar indicadores visuais de estado ativo (Nielsen: Visibilidade do Status)
+// Função para atualizar indicadores visuais de estado ativo
 function updateActiveStates() {
-  const controlItems = document.querySelectorAll('.control-item');
-  const settings = [
-    { element: controlItems[0], active: currentSettings.hideUnicoBar },
-    { element: controlItems[1], active: currentSettings.hideDocsBar },
-    { element: controlItems[2], active: currentSettings.fullscreenMode },
-    { element: controlItems[3], active: currentSettings.autoHide }
-  ];
-  
-  settings.forEach(({ element, active }) => {
-    if (element) {
-      element.classList.toggle('active', active);
-    }
-  });
+  const controlItem = document.querySelector('.control-item');
+  if (controlItem) {
+    controlItem.classList.toggle('active', currentSettings.hideUnicoBar);
+  }
 }
 
-// Melhorar feedback visual dos botões (Nielsen: Feedback)
-function addButtonFeedback() {
-  const buttons = document.querySelectorAll('.btn');
-  
-  buttons.forEach(button => {
-    button.addEventListener('click', function() {
-      // Adicionar estado de loading
-      this.classList.add('loading');
-      
-      // Remover loading após ação
-      setTimeout(() => {
-        this.classList.remove('loading');
-      }, 500);
-    });
-  });
-}
-
-// Implementar atalhos de teclado (Nielsen: Controle e Liberdade)
+// Implementar atalhos de teclado
 document.addEventListener('keydown', (e) => {
   // Escape: Restaurar padrões
   if (e.key === 'Escape') {
@@ -245,44 +169,21 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
-// Aplicar melhorias de UX ao inicializar
-document.addEventListener('DOMContentLoaded', () => {
-  addButtonFeedback();
-  
-  // Adicionar tooltips informativos
-  const tooltips = {
-    'hideUnicoBar': 'Remove completamente a barra do Sistema Único - Aplicado automaticamente',
-    'hideDocsBar': 'Mantém apenas ferramentas essenciais do Google Docs - Aplicado automaticamente',
-    'fullscreenMode': 'Ativa ambas as opções acima automaticamente',
-    'autoHide': 'Barras desaparecem durante rolagem e reaparecem quando parar',
-    'resetSettings': 'Atalho: Escape ou Ctrl+R'
-  };
-  
-  Object.entries(tooltips).forEach(([id, text]) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.title = text;
-    }
-  });
-});
-
-// Adicionar observador para mudanças em tempo real (Nielsen: Feedback Imediato)
+// Adicionar observador para mudanças em tempo real
 function setupRealtimeUpdates() {
-  const toggles = document.querySelectorAll('input[type="checkbox"]');
+  const toggle = document.getElementById('hideUnicoBar');
   
-  toggles.forEach(toggle => {
-    toggle.addEventListener('change', () => {
-      updateActiveStates();
-      
-      // Feedback visual sutil
-      const controlItem = toggle.closest('.control-item');
-      if (controlItem) {
-        controlItem.style.transform = 'scale(1.02)';
-        setTimeout(() => {
-          controlItem.style.transform = '';
-        }, 100);
-      }
-    });
+  toggle.addEventListener('change', () => {
+    updateActiveStates();
+    
+    // Feedback visual sutil
+    const controlItem = toggle.closest('.control-item');
+    if (controlItem) {
+      controlItem.style.transform = 'scale(1.02)';
+      setTimeout(() => {
+        controlItem.style.transform = '';
+      }, 100);
+    }
   });
 }
 

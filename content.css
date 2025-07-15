@@ -47,34 +47,26 @@
   }
 }
 
-/* Estilos para auto-hide */
-.mpf-auto-hide-active {
-  /* Transição suave */
-  .navbar,
-  .nav-header,
-  .header-principal,
-  [class*="header"],
-  [class*="toolbar"] {
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  
-  /* Ajustar espaço do conteúdo */
-  .container-fluid,
-  .main-content,
-  [class*="content-wrapper"] {
-    transition: margin-top 0.3s ease-in-out, padding-top 0.3s ease-in-out;
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-}
-
 /* Melhorias gerais para o iframe do Google Docs */
 iframe[src*="docs.google.com"] {
   border: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+  border-radius: 4px !important;
   transition: all 0.3s ease-in-out;
+  background: #fff !important;
+}
+
+/* Hover effect para o iframe quando não em modo tela cheia */
+body:not(.mpf-hide-unico-bar) iframe[src*="docs.google.com"]:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Remover efeitos quando em modo tela cheia */
+.mpf-hide-unico-bar iframe[src*="docs.google.com"] {
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  transform: none !important;
 }
 
 /* Ajustes quando em modo tela cheia */
@@ -117,11 +109,26 @@ iframe[src*="docs.google.com"] {
   overflow: hidden;
 }
 
-/* Animações suaves */
-* {
-  transition-property: margin, padding, height, transform, opacity;
+/* Animações suaves - aplicar apenas em elementos específicos */
+.navbar,
+.nav-header,
+.header-principal,
+[class*="header"],
+[class*="toolbar"],
+iframe[src*="docs.google.com"],
+.container-fluid,
+.main-content,
+[class*="content-wrapper"] {
+  transition-property: margin, padding, height, transform, opacity, top;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
+}
+
+/* Animações mais rápidas para elementos de UI */
+.toggle-switch,
+.control-item,
+.btn {
+  transition: all 0.2s ease-in-out;
 }
 
 /* Prevenir scroll horizontal */
@@ -142,4 +149,47 @@ body {
     width: 100%;
     z-index: 999;
   }
+  
+  /* Ocultar elementos adicionais que podem aparecer */
+  .breadcrumb,
+  .page-header,
+  .alert,
+  .notification,
+  [class*="alert"],
+  [class*="notification"],
+  [role="alert"] {
+    display: none !important;
+  }
+  
+  /* Garantir que modais e popups ainda funcionem */
+  .modal,
+  .popover,
+  .tooltip,
+  .dropdown-menu {
+    display: block !important;
+    visibility: visible !important;
+    z-index: 10000 !important;
+  }
+}
+
+/* Melhorar responsividade */
+@media (max-width: 768px) {
+  .mpf-hide-unico-bar iframe[src*="docs.google.com"] {
+    width: calc(100vw - 10px) !important;
+    margin: 0 5px !important;
+    height: calc(100vh - 10px) !important;
+  }
+}
+
+/* Evitar problemas de z-index */
+.mpf-hide-unico-bar iframe[src*="docs.google.com"] {
+  z-index: 1000 !important;
+  position: fixed !important;
+}
+
+/* Garantir que elementos importantes não sejam afetados */
+.mpf-hide-unico-bar .modal,
+.mpf-hide-unico-bar .popover,
+.mpf-hide-unico-bar .tooltip {
+  z-index: 10001 !important;
 }

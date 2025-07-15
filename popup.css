@@ -369,8 +369,49 @@ main::-webkit-scrollbar-thumb:hover {
 
 /* Indicadores de Estado Ativo */
 .control-item.active {
-  background: linear-gradient(135deg, var(--accent-light), rgba(0, 102, 204, 0.05));
-  border-color: var(--accent-primary);
+  background-color: #e0e8ff;
+}
+
+/* Zoom Control */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zoom-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  transition: background-color 0.2s;
+}
+
+.zoom-btn:hover {
+  background-color: #e0e0e0;
+}
+
+#zoomLevel {
+  width: 60px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+}
+
+/* Remove arrows from number input */
+#zoomLevel::-webkit-outer-spin-button,
+#zoomLevel::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#zoomLevel[type=number] {
+  -moz-appearance: textfield;
 }
 
 /* Melhorias de Acessibilidade */

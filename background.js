@@ -5,11 +5,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === 'install') {
     // Configurações iniciais
     const defaultSettings = {
-      hideUnicoBar: false,
-      hideDocsBar: false,
-      fullscreenMode: false,
-      autoHide: false,
-      zoomLevel: 100
+      hideUnicoBar: false
     };
     
     try {
@@ -18,9 +14,6 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     } catch (error) {
       console.error('MPF Docs Optimizer: Erro ao salvar configurações iniciais', error);
     }
-    
-    // Abrir página de boas-vindas (opcional)
-    // chrome.tabs.create({ url: 'welcome.html' });
   }
 });
 
@@ -60,84 +53,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// Função para injetar script no contexto do iframe (necessário para cross-origin)
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'injectToIframe' && request.frameId) {
-    chrome.scripting.executeScript({
-      target: { 
-        tabId: sender.tab.id,
-        frameIds: [request.frameId]
-      },
-      func: (settings) => {
-        // Este código será executado dentro do iframe
-        const applyDocsStyles = () => {
-          let styleEl = document.getElementById('mpf-docs-optimizer-styles');
-          if (!styleEl) {
-            styleEl = document.createElement('style');
-            styleEl.id = 'mpf-docs-optimizer-styles';
-            document.head.appendChild(styleEl);
-          }
-          
-          let styles = '';
-          
-          if (settings.hideDocsBar || settings.fullscreenMode) {
-            styles += `
-              .docs-material-menu-button-outer-box,
-              .docs-titlebar-buttons,
-              .docs-branding-container,
-              #docs-chrome,
-              .docs-material-gm-select-outer-box,
-              .docs-title-outer {
-                display: none !important;
-              }
-              
-              .docs-material #docs-header {
-                height: 30px !important;
-                min-height: 30px !important;
-              }
-              
-              .docs-material .docs-menubar {
-                height: 30px !important;
-                padding: 0 !important;
-              }
-              
-              .kix-appview-editor-container {
-                top: 30px !important;
-              }
-            `;
-          }
-          
-          if (settings.zoomLevel !== 100) {
-            styles += `
-              .kix-page-container {
-                zoom: ${settings.zoomLevel}% !important;
-              }
-            `;
-          }
-          
-          styleEl.textContent = styles;
-        };
-        
-        applyDocsStyles();
-        
-        // Observar mudanças
-        const observer = new MutationObserver(() => {
-          const styleEl = document.getElementById('mpf-docs-optimizer-styles');
-          if (!styleEl || !document.head.contains(styleEl)) {
-            applyDocsStyles();
-          }
-        });
-        
-        observer.observe(document.head, { childList: true });
-      },
-      args: [request.settings]
-    });
-    
-    sendResponse({ success: true });
-    return true;
-  }
-});
-
 // Monitorar mudanças no storage para sincronização entre abas
 chrome.storage.onChanged.addListener((changes, namespace) => {
   if (namespace === 'sync' && changes.mpfDocsSettings) {
@@ -151,25 +66,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
           // Ignorar erros se a aba não tiver o content script
         });
       });
-    });
-  }
-});
-
-// Limpar dados antigos periodicamente (manutenção)
-chrome.alarms.create('cleanup', { periodInMinutes: 60 * 24 }); // Uma vez por dia
-
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === 'cleanup') {
-    // Limpar dados temporários se necessário
-    chrome.storage.local.get(['tempData'], (result) => {
-      if (result.tempData) {
-        const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-        const filteredData = Object.entries(result.tempData || {})
-          .filter(([key, value]) => value.timestamp > oneWeekAgo)
-          .reduce((obj, [key, value]) => ({ ...obj, [key]: value }), {});
-        
-        chrome.storage.local.set({ tempData: filteredData });
-      }
     });
   }
 });

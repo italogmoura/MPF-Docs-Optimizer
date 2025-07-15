@@ -14,13 +14,6 @@
       
       <!-- Controles no Header -->
       <div class="header-controls">
-        <!-- Zoom Control -->
-        <div class="zoom-control-mini">
-          <button class="zoom-btn-mini" id="zoomOut">−</button>
-          <span class="zoom-value-mini" id="zoomValue">100%</span>
-          <button class="zoom-btn-mini" id="zoomIn">+</button>
-        </div>
-        
         <!-- Reset Button -->
         <button class="reset-btn" id="resetSettings" title="Restaurar Padrões (Esc)">
           <span class="reset-icon">↺</span>
@@ -31,7 +24,7 @@
     <main>
       <!-- Controles Principais -->
       <section class="controls-section">
-        <h2>Barras de Interface</h2>
+        <h2>Controle de Interface</h2>
         
         <div class="control-item">
           <label class="toggle-switch">
@@ -43,42 +36,20 @@
             <span class="control-desc">Remove a barra superior do sistema</span>
           </div>
         </div>
-
-        <div class="control-item">
-          <label class="toggle-switch">
-            <input type="checkbox" id="hideDocsBar">
-            <span class="slider"></span>
-          </label>
-          <div class="control-info">
-            <span class="control-label">Compactar Barra Google Docs</span>
-            <span class="control-desc">Mantém apenas a barra mínima do editor</span>
-          </div>
-        </div>
-
-        <div class="control-item">
-          <label class="toggle-switch">
-            <input type="checkbox" id="fullscreenMode">
-            <span class="slider"></span>
-          </label>
-          <div class="control-info">
-            <span class="control-label">Modo Tela Cheia Inteligente</span>
-            <span class="control-desc">Maximiza o editor ocultando todas as barras</span>
-          </div>
-        </div>
       </section>
 
-      <!-- Recursos Avançados -->
+      <!-- Zoom Control -->
       <section class="controls-section">
-        <h2>Recursos Avançados</h2>
-
+        <h2>Controle de Zoom</h2>
         <div class="control-item">
-          <label class="toggle-switch">
-            <input type="checkbox" id="autoHide">
-            <span class="slider"></span>
-          </label>
+          <div class="zoom-controls">
+            <button id="zoomOut" class="zoom-btn">-</button>
+            <input type="number" id="zoomLevel" min="50" max="200" step="10">
+            <button id="zoomIn" class="zoom-btn">+</button>
+          </div>
           <div class="control-info">
-            <span class="control-label">Auto-ocultar ao Rolar</span>
-            <span class="control-desc">Barras desaparecem durante a rolagem</span>
+            <span class="control-label">Ajustar Zoom do Editor</span>
+            <span class="control-desc">Use os botões ou digite o valor (50-200%)</span>
           </div>
         </div>
       </section>
