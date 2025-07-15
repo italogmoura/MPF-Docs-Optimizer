@@ -32,6 +32,7 @@ Thumbs.db
 
 # Development files
 .claude/
+CLAUDE.md
 
 # Logs
 logs
@@ -43,3 +44,6 @@ logs
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Archives
+*.zip

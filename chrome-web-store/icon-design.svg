@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with subtle gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E88E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Shadow for depth -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="1" result="offsetblur"/>
+      <feFlood flood-color="#000000" flood-opacity="0.2"/>
+      <feComposite in2="offsetblur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- White glow for dark backgrounds -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Main icon area (96x96 with 16px padding) -->
+  <g transform="translate(16, 16)">
+    <!-- Document background -->
+    <rect x="12" y="8" width="72" height="80" rx="4" ry="4" 
+          fill="white" filter="url(#shadow)"/>
+    
+    <!-- Document header bar (representing MPF bar) -->
+    <rect x="12" y="8" width="72" height="12" rx="4" ry="4" 
+          fill="url(#bgGradient)"/>
+    
+    <!-- Expand arrows indicating optimization -->
+    <g fill="#1E88E5" opacity="0.9">
+      <!-- Top-left arrow -->
+      <path d="M 20 28 L 20 20 L 28 20 M 20 20 L 26 26" 
+            stroke="#1E88E5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      
+      <!-- Top-right arrow -->
+      <path d="M 76 28 L 76 20 L 68 20 M 76 20 L 70 26" 
+            stroke="#1E88E5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      
+      <!-- Bottom-left arrow -->
+      <path d="M 20 68 L 20 76 L 28 76 M 20 76 L 26 70" 
+            stroke="#1E88E5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      
+      <!-- Bottom-right arrow -->
+      <path d="M 76 68 L 76 76 L 68 76 M 76 76 L 70 70" 
+            stroke="#1E88E5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    </g>
+    
+    <!-- Document lines representing text -->
+    <g fill="#E0E0E0">
+      <rect x="24" y="36" width="48" height="3" rx="1.5"/>
+      <rect x="24" y="44" width="36" height="3" rx="1.5"/>
+      <rect x="24" y="52" width="42" height="3" rx="1.5"/>
+      <rect x="24" y="60" width="30" height="3" rx="1.5"/>
+    </g>
+    
+    <!-- MPF logo hint (simplified) -->
+    <circle cx="48" cy="14" r="3" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Subtle white outer glow for dark backgrounds -->
+  <rect x="0" y="0" width="128" height="128" fill="none" 
+        stroke="white" stroke-width="0.5" opacity="0.3" filter="url(#glow)"/>
+</svg>
