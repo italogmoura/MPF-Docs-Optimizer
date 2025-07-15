@@ -75,6 +75,40 @@ function setupListeners() {
       settings = request.settings;
       applySettings();
       sendResponse({ success: true });
+    } else if (request.action === 'executeUnicoAction') {
+      executeUnicoAction(request.unicoAction)
+        .then(success => sendResponse({ success }))
+        .catch(error => {
+          console.error('Erro ao executar ação do Único:', error);
+          sendResponse({ success: false, error: error.message });
+        });
+      return true; // Indica resposta assíncrona
     }
   });
+}
+
+// Executar ações do Sistema Único
+async function executeUnicoAction(action) {
+  const selectorMap = {
+    'exibirDados': 'button[ng-click="btnExibirDados()"]',
+    'visualizarPdf': 'button[ng-click="btnVisualizarPdf()"]',
+    'salvarModelo': 'button[ng-click="btnSalvarComoModelo()"]',
+    'salvarFechar': 'button[ng-click="btnPainel()"]'
+  };
+
+  const selector = selectorMap[action];
+  if (!selector) {
+    throw new Error(`Ação não reconhecida: ${action}`);
+  }
+
+  const button = document.querySelector(selector);
+  if (!button) {
+    throw new Error(`Botão não encontrado para a ação: ${action}`);
+  }
+
+  // Simular clique no botão
+  button.click();
+  
+  console.log(`MPF Docs Optimizer: Executada ação "${action}"`);
+  return true;
 }

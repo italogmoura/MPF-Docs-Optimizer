@@ -412,6 +412,7 @@ main::-webkit-scrollbar-thumb:hover {
 
 #zoomLevel[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 /* Melhorias de Acessibilidade */
@@ -434,6 +435,50 @@ main::-webkit-scrollbar-thumb:hover {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* Acessos Rápidos */
+.quick-access-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.quick-access-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.quick-access-btn:hover {
+  background-color: var(--accent-light);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.quick-access-btn:active {
+  transform: translateY(0);
+  background-color: var(--bg-tertiary);
+}
+
+.quick-access-btn .btn-icon {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.quick-access-btn .btn-text {
+  font-weight: 500;
 }
 
 /* Feedback Visual para Ações */

@@ -187,7 +187,54 @@ function setupRealtimeUpdates() {
   });
 }
 
+// Lógica para Acessos Rápidos
+function setupQuickAccess() {
+  const quickAccessButtons = document.querySelectorAll('.quick-access-btn');
+  quickAccessButtons.forEach(button => {
+    button.addEventListener('click', async () => {
+      const action = button.dataset.action;
+      if (action) {
+        await executeUnicoAction(action);
+      }
+    });
+  });
+}
+
+// Executar ações do Sistema Único
+async function executeUnicoAction(action) {
+  try {
+    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tabs[0]) {
+      const response = await chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'executeUnicoAction',
+        unicoAction: action
+      });
+      
+      if (response && response.success) {
+        showStatus(`Ação "${getActionLabel(action)}" executada!`, 'success');
+      } else {
+        showStatus('Erro ao executar ação', 'error');
+      }
+    }
+  } catch (error) {
+    console.error('Erro ao executar ação do Único:', error);
+    showStatus('Erro ao executar ação', 'error');
+  }
+}
+
+// Obter rótulo da ação
+function getActionLabel(action) {
+  const labels = {
+    'exibirDados': 'Exibir Dados',
+    'visualizarPdf': 'Visualizar PDF',
+    'salvarModelo': 'Salvar como Modelo',
+    'salvarFechar': 'Salvar e Fechar'
+  };
+  return labels[action] || action;
+}
+
 // Inicializar melhorias de UX
 document.addEventListener('DOMContentLoaded', () => {
   setupRealtimeUpdates();
+  setupQuickAccess();
 });
