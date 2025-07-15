@@ -44,6 +44,8 @@ async function loadSettings() {
     if (result.mpfDocsSettings) {
       currentSettings = { ...defaultSettings, ...result.mpfDocsSettings };
     }
+    // Aplicar indicadores visuais de estado ativo
+    updateActiveStates();
   } catch (error) {
     console.error('Erro ao carregar configurações:', error);
     showStatus('Erro ao carregar configurações', 'error');
@@ -196,4 +198,106 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       el.disabled = true;
     });
   }
+});
+
+// Função para atualizar indicadores visuais de estado ativo (Nielsen: Visibilidade do Status)
+function updateActiveStates() {
+  const controlItems = document.querySelectorAll('.control-item');
+  const settings = [
+    { element: controlItems[0], active: currentSettings.hideUnicoBar },
+    { element: controlItems[1], active: currentSettings.hideDocsBar },
+    { element: controlItems[2], active: currentSettings.fullscreenMode },
+    { element: controlItems[3], active: currentSettings.autoHide }
+  ];
+  
+  settings.forEach(({ element, active }) => {
+    if (element) {
+      element.classList.toggle('active', active);
+    }
+  });
+}
+
+// Melhorar feedback visual dos botões (Nielsen: Feedback)
+function addButtonFeedback() {
+  const buttons = document.querySelectorAll('.btn');
+  
+  buttons.forEach(button => {
+    button.addEventListener('click', function() {
+      // Adicionar estado de loading
+      this.classList.add('loading');
+      
+      // Remover loading após ação
+      setTimeout(() => {
+        this.classList.remove('loading');
+      }, 500);
+    });
+  });
+}
+
+// Implementar atalhos de teclado (Nielsen: Controle e Liberdade)
+document.addEventListener('keydown', (e) => {
+  // Ctrl/Cmd + Enter: Aplicar configurações
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    elements.applySettings.click();
+  }
+  
+  // Escape: Restaurar padrões
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    elements.resetSettings.click();
+  }
+  
+  // Ctrl/Cmd + R: Reset
+  if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+    e.preventDefault();
+    elements.resetSettings.click();
+  }
+});
+
+// Aplicar melhorias de UX ao inicializar
+document.addEventListener('DOMContentLoaded', () => {
+  addButtonFeedback();
+  
+  // Adicionar tooltips informativos
+  const tooltips = {
+    'hideUnicoBar': 'Remove completamente a barra do Sistema Único',
+    'hideDocsBar': 'Mantém apenas ferramentas essenciais do Google Docs',
+    'fullscreenMode': 'Ativa ambas as opções acima automaticamente',
+    'autoHide': 'Barras desaparecem durante rolagem e reaparecem quando parar',
+    'applySettings': 'Atalho: Ctrl+Enter',
+    'resetSettings': 'Atalho: Escape ou Ctrl+R'
+  };
+  
+  Object.entries(tooltips).forEach(([id, text]) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.title = text;
+    }
+  });
+});
+
+// Adicionar observador para mudanças em tempo real (Nielsen: Feedback Imediato)
+function setupRealtimeUpdates() {
+  const toggles = document.querySelectorAll('input[type="checkbox"]');
+  
+  toggles.forEach(toggle => {
+    toggle.addEventListener('change', () => {
+      updateActiveStates();
+      
+      // Feedback visual imediato
+      const controlItem = toggle.closest('.control-item');
+      if (controlItem) {
+        controlItem.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          controlItem.style.transform = '';
+        }, 150);
+      }
+    });
+  });
+}
+
+// Inicializar melhorias de UX
+document.addEventListener('DOMContentLoaded', () => {
+  setupRealtimeUpdates();
 });

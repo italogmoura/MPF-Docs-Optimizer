@@ -50,13 +50,15 @@ body {
   color: var(--text-primary);
   background-color: var(--bg-primary);
   width: 380px;
-  min-height: 500px;
+  min-height: 480px;
+  max-height: 600px;
 }
 
 .container {
   display: flex;
   flex-direction: column;
-  min-height: 500px;
+  min-height: 480px;
+  max-height: 600px;
 }
 
 /* Header */
@@ -82,38 +84,64 @@ h1 {
 /* Main Content */
 main {
   flex: 1;
-  padding: 20px;
+  padding: 16px 20px 20px 20px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Sections */
 .controls-section {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  flex: 1;
 }
 
 .controls-section h2 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--accent-primary);
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover));
+  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.controls-section h2::before {
+  content: "⚙️";
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.controls-section:nth-child(3) h2::before {
+  content: "🚀";
 }
 
 /* Control Items */
 .control-item {
   display: flex;
   align-items: center;
-  padding: 12px;
-  margin-bottom: 8px;
+  padding: 14px;
+  margin-bottom: 10px;
   background-color: var(--bg-secondary);
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .control-item:hover {
   background-color: var(--bg-tertiary);
-  transform: translateX(2px);
+  border-color: var(--accent-primary);
+  transform: translateX(4px) scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+.control-item:active {
+  transform: translateX(2px) scale(1.01);
 }
 
 .control-info {
@@ -229,11 +257,19 @@ input:checked + .slider:before {
   text-align: center;
 }
 
-/* Action Buttons */
-.action-buttons {
+/* Action Buttons - Topo (Sempre Visíveis) */
+.action-buttons-top {
   display: flex;
-  gap: 12px;
-  margin-top: 24px;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn {
@@ -342,4 +378,48 @@ main::-webkit-scrollbar-thumb {
 
 main::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
+}
+
+/* Indicadores de Estado Ativo */
+.control-item.active {
+  background: linear-gradient(135deg, var(--accent-light), rgba(0, 102, 204, 0.05));
+  border-color: var(--accent-primary);
+}
+
+.control-item.active .control-label::after {
+  content: " ✓";
+  color: var(--accent-primary);
+  font-weight: bold;
+}
+
+/* Melhorias de Acessibilidade */
+.btn:focus,
+.toggle-switch input:focus + .slider {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Estados de Loading */
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.btn.loading .btn-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Feedback Visual para Ações */
+.status.success {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
