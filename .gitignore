@@ -33,6 +33,10 @@ Thumbs.db
 # Development files
 .claude/
 CLAUDE.md
+**/CLAUDE.md
+
+# Personal/system paths that shouldn't be public
+/Users/*/
 
 # Logs
 logs
