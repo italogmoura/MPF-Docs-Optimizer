@@ -64,7 +64,7 @@ body {
 /* Header */
 header {
   background-color: var(--bg-secondary);
-  padding: 20px;
+  padding: 20px 80px 20px 20px;
   text-align: center;
   border-bottom: 1px solid var(--border-color);
   position: relative;
@@ -215,32 +215,32 @@ input:checked + .slider:before {
 /* Controles no Header */
 .header-controls {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 12px;
+  right: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 /* Zoom Control Minimalista */
 .zoom-control-mini {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background-color: var(--bg-tertiary);
-  border-radius: 20px;
-  padding: 4px 8px;
+  border-radius: 16px;
+  padding: 3px 6px;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-sm);
 }
 
 .zoom-btn-mini {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border: none;
   background-color: transparent;
   color: var(--text-primary);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   border-radius: 50%;
   cursor: pointer;
@@ -261,17 +261,17 @@ input:checked + .slider:before {
 }
 
 .zoom-value-mini {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-primary);
-  min-width: 36px;
+  min-width: 32px;
   text-align: center;
 }
 
 /* Botão Reset no Header */
 .reset-btn {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border: none;
   background-color: var(--bg-tertiary);
   color: var(--text-secondary);
@@ -297,7 +297,7 @@ input:checked + .slider:before {
 }
 
 .reset-icon {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
